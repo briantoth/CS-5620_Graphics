@@ -36,6 +36,45 @@ public abstract class TriangleMesh extends Mesh {
 	public final void render(GL2 gl)
 	{
 		// TODO: (Problem 1) Fill in the code to render the mesh.
+		//gl.glBegin(GL2.GL_TRIANGLES);
+		{
+			// for each triangle
+			for (int i = 0; i < triangles.length; i += 3) {
+				gl.glBegin(GL2.GL_TRIANGLES);
+				for (int j = 0; j < 3; j++){
+					//System.out.println("i is " + i);
+					//System.out.println("length of vertices is: " + vertices.length);
+					//System.out.println("length of normals is: " + normals.length);
+					int n = triangles[i+j]; // gets location of the jth vertex of the ith triangle
+					n = n*3;
+					//System.out.println("normal is : " + normals[n] + ", " + normals[n+1] + ", " + normals[n+2]);
+					//System.out.println("n is " + n);
+					//System.out.println("i is " + i);
+					//System.out.println("j is " + j);
+					//System.out.println("i+j is " + (i+j));
+					gl.glNormal3f(normals[n], normals[n+1],normals[n+2]);
+					gl.glVertex3f(vertices[n], vertices[n+1], vertices[n+2]);
+					//gl.glVertex3f(vertices[n+2], vertices[n+1], vertices[n]);
+					
+				}
+				gl.glEnd();
+			}
+			// for each triangle
+				// set the normal
+				// for each vertex in the triangle
+					// gl.glVertex3f that shit
+			
+			
+			
+			
+			/*for (int i=0; i<vertices.length; i+=3){
+				gl.glNormal3f(normals[i], normals[i+1], normals[i+2]);
+				for (int j=0; j<9; j+=3){
+					gl.glVertex3f(vertices[j+i], vertices[j+i+1], vertices[j+i+2]);
+				}
+			}*/
+		}
+		//gl.glEnd();
 	}
 
 	public final void setMeshData(float[] vertices, float[] normals, int[] triangles)
