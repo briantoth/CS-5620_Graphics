@@ -14,12 +14,18 @@ public class Cylinder extends TriangleMesh
 		// TODO: (Problem 2) Fill in the code to create a cylinder mesh.
 		int numCircumferencePoints= (int) (2*Math.PI*DEFAULT_RADIUS/tolerance);
 		
-		int vertexCount= numCircumferencePoints * 1 + 1; //TODO: should be * 4 + 2
+		int vertexCount= numCircumferencePoints * 4 + 2; //TODO: should be * 4 + 2
 		
 		float[] vertices = new float[3*vertexCount];
 		float[] normals = new float[3*vertexCount];
 		
 		int nextStart= addVertices(numCircumferencePoints, 0, vertices, normals, 1, false);
+		
+		nextStart= addVertices(numCircumferencePoints, nextStart, vertices, normals, -1, false);
+		
+		nextStart= addVertices(numCircumferencePoints, nextStart, vertices, normals, 1, true);
+		
+		nextStart= addVertices(numCircumferencePoints, nextStart, vertices, normals, -1, true);
 		
 		//add center of top circle
 		vertices[nextStart * 3]= 0;
@@ -29,15 +35,50 @@ public class Cylinder extends TriangleMesh
 		normals[nextStart * 3 + 1]= 1;
 		normals[nextStart * 3 + 2]= 0;
 		
-		int triangleCount= numCircumferencePoints * 1; //TODO: 1 should be 4
+		nextStart++;
+		
+		//add center of bottom circle
+		vertices[nextStart * 3]= 0;
+		vertices[nextStart * 3 + 1]= -1;
+		vertices[nextStart * 3 + 2]= 0;
+		normals[nextStart * 3]= 0;
+		normals[nextStart * 3 + 1]= -1;
+		normals[nextStart * 3 + 2]= 0;
+		
+		int triangleCount= numCircumferencePoints * 4; //TODO: 1 should be 4
 		
 		int[] triangles= new int[3*triangleCount];
 		
+		//do the top circle
 		for(int i= 0; i < numCircumferencePoints; i++)
 		{
 			triangles[i*3]= i;
-			triangles[i*3 + 1]= numCircumferencePoints; //will always be the center of the circle
+			triangles[i*3 + 1]= numCircumferencePoints*4; //will always be the center of the circle
 			triangles[i*3 + 2]= (i+1) % numCircumferencePoints;
+		}
+		
+		//do the bottom circle
+		for(int i= numCircumferencePoints; i < numCircumferencePoints*2; i++)
+		{
+			triangles[i*3]= i;
+			triangles[i*3 + 1]= numCircumferencePoints*4 + 1; //will always be the center of the circle
+			triangles[i*3 + 2]= (i+1) % numCircumferencePoints + numCircumferencePoints;
+		}
+		
+		//do the top side
+		for(int i= numCircumferencePoints*2; i < numCircumferencePoints*3; i++)
+		{
+			triangles[i*3]= i;
+			triangles[i*3 + 1]= i + numCircumferencePoints; //this is the point on the bottom circle
+			triangles[i*3 + 2]= (i+1) % numCircumferencePoints + numCircumferencePoints*2;
+		}
+		
+		//do the bottom side
+		for(int i= numCircumferencePoints*3; i < numCircumferencePoints*4; i++)
+		{
+			triangles[i*3]= i;
+			triangles[i*3 + 1]= (i - numCircumferencePoints+1) % numCircumferencePoints + numCircumferencePoints*2; //this is the point on the top circle
+			triangles[i*3 + 2]= (i+1) % numCircumferencePoints + numCircumferencePoints*3;
 		}
 		
 		setMeshData(vertices, normals, triangles);
@@ -57,20 +98,15 @@ public class Cylinder extends TriangleMesh
 			
 			if(side)
 			{
-				
+				normals[3*i]= vertices[3*i];
+				normals[3*i + 1]= vertices[3*i + 1];
+				normals[3*i + 2]= vertices[3*i +2];
 			}
 			else
 			{
 				normals[3*i]= 0;
+				normals[3*i + 1]= yCoord;
 				normals[3*i + 2]= 0;
-				if(yCoord > 0)
-				{
-					normals[3*i + 1]= 1;
-				}
-				else
-				{
-					normals[3*i + 1]= -1;
-				}
 			}
 		}
 		
