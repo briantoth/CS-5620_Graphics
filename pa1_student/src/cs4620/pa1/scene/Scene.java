@@ -12,6 +12,7 @@ import java.util.Vector;
 import javax.media.opengl.GL2;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
+import javax.vecmath.Vector3f;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -113,11 +114,79 @@ public class Scene
 	public void render(GL2 gl)
 	{
 		// TODO: (Problem 3) Fill in the code to render the scene.		
+		renderHelper(getSceneRoot(), gl, false);
 	}
 
 	public void renderForPicking(GL2 gl)
 	{		
 		// TODO: (Problem 3) Fill in the code to render the scene for picking.
+		renderHelper(getSceneRoot(), gl, true);
+	}
+	
+	private void renderHelper(SceneNode node, GL2 gl, boolean picking)
+	{
+		if (node instanceof TransformationNode)
+		{
+			TransformationNode transformationNode= (TransformationNode)node;
+			
+			//gl.glPushMatrix();
+			
+			Vector3f transform= transformationNode.scaling;
+			gl.glScalef(transform.x, transform.y, transform.z);
+			
+			//perform x, y, and z rotations separately (in that order)
+			transform= transformationNode.rotation;
+			//gl.glRotatef(transform.x, transform.y, transform.z, 1);
+			/*
+			gl.glRotatef(transform.x, 0, 0, 0);
+			gl.glRotatef(transform.y, 0, 0, 0);
+			gl.glRotatef(transform.z, 0, 0, 0);
+			*/
+			
+			/*
+			float c1= (float) Math.cos(Math.toRadians(transform.x/2));
+			float c2= (float) Math.cos(Math.toRadians(transform.y/2));
+			float c3= (float) Math.cos(Math.toRadians(transform.z/2));
+			float s1= (float) Math.cos(Math.toRadians(transform.x/2));
+			float s2= (float) Math.cos(Math.toRadians(transform.y/2));
+			float s3= (float) Math.cos(Math.toRadians(transform.z/2));
+			
+			float angle= (float) Math.toDegrees((2 * Math.acos(c1*c2*c3 - s1*s2*s3)));
+			float x = s1 * s2 * c3 +c1 * c2 * s3;
+			float y = s1 * c2 * c3 + c1 * s2 * s3;
+			float z = c1 * s2 * c3 - s1 * c2 * s3;
+			
+			gl.glRotatef(angle, x, y, z);
+			*/
+			gl.glRotatef(transform.x, 1, 0, 0);
+			gl.glRotatef(transform.y, 0, 1, 0);
+			gl.glRotatef(transform.z, 0, 0, 1);
+			
+			transform= transformationNode.translation;
+			gl.glTranslatef(transform.x, transform.y, transform.z);
+			
+			if (node instanceof MeshNode)
+			{
+				MeshNode meshNode = (MeshNode)node;
+				if(picking)
+					meshNode.drawForPicking(gl);
+				else
+					meshNode.draw(gl);
+			}
+			
+			//gl.glPopMatrix();
+		}
+		
+		if (node instanceof LightNode)
+		{
+			//do nothing?
+		}
+		
+		//call all of the children with the new transformations added on
+		for (int i = 0; i < node.getChildCount(); i++)
+		{
+			renderHelper(node.getSceneNodeChild(i), gl, picking);
+		}
 	}
 
 	/**
