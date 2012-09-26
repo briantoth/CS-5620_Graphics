@@ -99,7 +99,7 @@ public class Cylinder extends TriangleMesh
 			if(side)
 			{
 				normals[3*i]= vertices[3*i];
-				normals[3*i + 1]= vertices[3*i + 1];
+				normals[3*i + 1]= 0;
 				normals[3*i + 2]= vertices[3*i +2];
 			}
 			else
