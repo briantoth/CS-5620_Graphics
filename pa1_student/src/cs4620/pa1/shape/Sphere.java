@@ -57,24 +57,51 @@ public class Sphere extends TriangleMesh
 		// so we can simplify numxy + numxy + 2 * numxy * (numlats - 1);
 		int numtriangles = 2 * numVL * numlats;
 		
+		
+		// 0 = top pole
+		// 1 2 3, = first latitude
+		// 4 5 6 = second latitude
+		// 7 = bottom pole
+		// num triangles = 3 + 6 + 3 = 12 = 2 * 3 * 2 = 2 * numVL * numLats
+		// numvl = 3
+		// numlats = 2
+		// triangles are:
+		// 1 2 0
+		// 2 3 0
+		// 3 1 0
+		
+		// 4 5 1
+		// 5 2 1
+		// 5 6 2
+		// 6 3 2
+		// 6 4 3
+		// 4 1 3
+		
+		// 7 5 4
+		// 7 6 5
+		
+		// 7 4 6
+		
+		// ;
 		// ok we know how many triangles we can now allocate and fill
 		int[] triangles = new int[3*numtriangles];
+		
 		
 		// two special cases: poles
 		// for top pole connect it to each pair of vertices in the "first" latitude
 		point = 1;
 		int triangle = 0;
 		for (int i = 0; i < numVL - 1; i++) {
-			triangles[3 * triangle + 0] = 3 * (point + i);
-			triangles[3 * triangle + 1] = 3 * (point + i + 1);
+			triangles[3 * triangle + 0] =  (point + i);
+			triangles[3 * triangle + 1] =  (point + i + 1);
 			triangles[3 * triangle + 2] = 0;
 			triangle += 1;
 		}
-		triangles[3 * triangle + 0] = 3 * (point + numVL - 1);
-		triangles[3 * triangle + 1] = 3 * (point + 0);
+		triangles[3 * triangle + 0] =  (point + numVL - 1);
+		triangles[3 * triangle + 1] =  (point + 0);
 		triangles[3 * triangle + 2] = 0;
 		triangle += 1;
-		point += numVL;
+		//point += numVL;
 		
 		// for latitudes in between... each vertex will be in part of two triangles below it
 		// actually not true, each vertex will be part of four triangles below it,
@@ -86,50 +113,48 @@ public class Sphere extends TriangleMesh
 			//thetab =  ( (i+1)*Math.PI / ( (numlats + 1))); // theta from xz plane to y
 			//rxzb =  Math.sqrt(2*Math.pow(rxy, 2)*(1 - Math.cos(Math.PI - theta)));
 			//numVLb = (int) Math.ceil(2 * Math.PI * rxz / tolerance);
-			// first special case: first point (0)
-			triangles[3 * triangle + 0] = 3 * (point + numVL + 0 + 0);
-			triangles[3 * triangle + 1] = 3 * (point + numVL + 0 + 1);
-			triangles[3 * triangle + 2] = 3 * (point + 0);
-			triangle += 1;
-			triangles[3 * triangle + 0] = 3 * (point + numVL + 0 + 1);
-			triangles[3 * triangle + 1] = 3 * (point + 0 + 1);
-			triangles[3 * triangle + 2] = 3 * (point + 0 + 0);
-			triangle += 1;
 			// normal cases
-			for (int j = 1; j < numVL - 1; j++) {
-				triangles[3 * triangle + 0] = 3 * (point + numVL + j + 0);
-				triangles[3 * triangle + 1] = 3 * (point + numVL + j + 1);
-				triangles[3 * triangle + 2] = 3 * (point + j);
+			for (int j = 0; j < numVL - 1; j++) {
+				// 5 6 2
+				// 6 3 2
+				// 6 4 3
+				// 4 1 3
+				triangles[3 * triangle + 0] =  (point + numVL + j + 0);
+				triangles[3 * triangle + 1] =  (point + numVL + j + 1);
+				triangles[3 * triangle + 2] =  (point + j);
 				triangle += 1;
-				triangles[3 * triangle + 0] = 3 * (point + numVL + j + 1);
-				triangles[3 * triangle + 1] = 3 * (point + j + 1);
-				triangles[3 * triangle + 2] = 3 * (point + j + 0);
+				triangles[3 * triangle + 0] =  (point + numVL + j + 1);
+				triangles[3 * triangle + 1] =  (point + j + 1);
+				triangles[3 * triangle + 2] =  (point + j + 0);
 				triangle += 1;
 			}
 			// special case the last point
-			triangles[3 * triangle + 0] = 3 * (point + numVL + numVL - 1);
-			triangles[3 * triangle + 1] = 3 * (point + numVL + 0);
-			triangles[3 * triangle + 2] = 3 * (point + numVL - 1);
+			triangles[3 * triangle + 0] =  (point + numVL + numVL - 1);
+			triangles[3 * triangle + 1] =  (point + numVL + 0);
+			triangles[3 * triangle + 2] =  (point + numVL - 1);
 			triangle += 1;
-			triangles[3 * triangle + 0] = 3 * (point + numVL + 0);
-			triangles[3 * triangle + 1] = 3 * (point + 0);
-			triangles[3 * triangle + 2] = 3 * (point + numVL - 1);
+			triangles[3 * triangle + 0] =  (point + numVL + 0);
+			triangles[3 * triangle + 1] =  (point + 0);
+			triangles[3 * triangle + 2] =  (point + numVL - 1);
 			triangle += 1;
 			point += numVL;
 		}
 		
 		// for bottom pole connect it to each pair of vertices in the "last" latitude
 		for (int i = 0; i < numVL - 1; i++) {
-			triangles[3 * triangle + 0] = vertices.length - 3;
-			triangles[3 * triangle + 1] = 3 * (point + i + 1);
-			triangles[3 * triangle + 2] = 3 * (point + i + 0);
+			triangles[3 * triangle + 0] = numvertices - 1;
+			triangles[3 * triangle + 1] =  (point + i + 1);
+			triangles[3 * triangle + 2] =  (point + i + 0);
 			triangle += 1;
 		}
-		triangles[3 * triangle + 0] = vertices.length - 3;
-		triangles[3 * triangle + 1] = 3 * (point + 0);
-		triangles[3 * triangle + 2] = 3 * (point + numVL - 1);
+		triangles[3 * triangle + 0] = numvertices - 1;
+		triangles[3 * triangle + 1] =  (point + 0);
+		triangles[3 * triangle + 2] = (point + numVL - 1);
 		triangle += 1;
 		point += numVL;
+		System.out.println(point + ", " + vertices.length/3);
+		System.out.println(triangle + ", " + triangles.length/3);
+		System.out.println(numVL);
 		
 		setMeshData(vertices, normals, triangles);
 	}
