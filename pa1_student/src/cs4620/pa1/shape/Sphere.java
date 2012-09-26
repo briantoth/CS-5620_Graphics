@@ -27,14 +27,16 @@ public class Sphere extends TriangleMesh
 		
 		// now fill in the rest
 		int point = 1;
-		double theta, phi;
-		phi =  (2 * Math.PI * r / tolerance);
+		double theta, deltaphi;
+		deltaphi = 2 * Math.PI / numVL;
 		for (int i=1; i < numlats + 1; i++) {
 			theta =  ( i * Math.PI / (numlats + 1) ); // theta from +z to xy plane
 			for (int j = 0; j < numVL; j++) {
-				vertices[3 * point + 0] = (float) (r * Math.sin(theta) * Math.cos(phi)); // x
-				vertices[3 * point + 1] = (float) (r * Math.sin(theta) * Math.sin(phi)); // y
+				vertices[3 * point + 0] = (float) (r * Math.sin(theta) * Math.cos(j * deltaphi)); // x
+				vertices[3 * point + 1] = (float) (r * Math.sin(theta) * Math.sin(j * deltaphi)); // y
 				vertices[3 * point + 2] = (float) (r * Math.cos(theta)); // z
+				System.out.println(vertices[3 * point + 0] + ", " + vertices[3 * point + 1]
+						+ ", " + vertices[3 * point + 2]);
 				point += 1;
 				assert(point != numvertices - 1);
 			}
