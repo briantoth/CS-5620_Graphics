@@ -83,7 +83,7 @@ public class Problem2 extends JFrame implements GLSceneDrawer, ChangeListener {
 	private void initMesh()
 	{
 		meshes = new ArrayList<Mesh>();
-		//meshes.add(new Sphere());
+		meshes.add(new Sphere());
 		meshes.add(new Cylinder());
 		meshes.add(new Torus());
 		updateMeshTolerance(sliderPanel.getTolerance());
