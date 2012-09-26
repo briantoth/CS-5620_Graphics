@@ -5,7 +5,6 @@ import java.util.Map;
 
 public class Cylinder extends TriangleMesh
 {
-	private static final float DEFAULT_HEIGHT= 2;
 	private static final float DEFAULT_RADIUS= 1;
 	
 	@Override
