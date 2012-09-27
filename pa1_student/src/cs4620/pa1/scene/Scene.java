@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import javax.media.opengl.GL2;
+import javax.media.opengl.fixedfunc.GLMatrixFunc;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.vecmath.Vector3f;
@@ -114,12 +115,20 @@ public class Scene
 	public void render(GL2 gl)
 	{
 		// TODO: (Problem 3) Fill in the code to render the scene.		
+		gl.glClearColor(0, 0, 0, 0);
+		gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
+
+		gl.glColor3d(1.0, 1.0, 1.0);
 		renderHelper(getSceneRoot(), gl, false);
 	}
 
 	public void renderForPicking(GL2 gl)
 	{		
 		// TODO: (Problem 3) Fill in the code to render the scene for picking.
+		gl.glClearColor(0, 0, 0, 0);
+		gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
+
+		gl.glColor3d(1.0, 1.0, 1.0);
 		renderHelper(getSceneRoot(), gl, true);
 	}
 	
@@ -129,18 +138,19 @@ public class Scene
 		{
 			TransformationNode transformationNode= (TransformationNode)node;
 			
-			Vector3f transform= transformationNode.scaling;
-			gl.glScalef(transform.x, transform.y, transform.z);
+			Vector3f transform= transformationNode.translation;
+			gl.glTranslatef(transform.x, transform.y, transform.z);
 			
-			//perform x, y, and z rotations separately (in that order)
+			
+			//perform z, y, and x rotations separately (in that order)
 			transform= transformationNode.rotation;
 			
-			gl.glRotatef(transform.x, 1, 0, 0);
-			gl.glRotatef(transform.y, 0, 1, 0);
 			gl.glRotatef(transform.z, 0, 0, 1);
+			gl.glRotatef(transform.y, 0, 1, 0);
+			gl.glRotatef(transform.x, 1, 0, 0);
 			
-			transform= transformationNode.translation;
-			gl.glTranslatef(transform.x, transform.y, transform.z);
+			transform= transformationNode.scaling;
+			gl.glScalef(transform.x, transform.y, transform.z);
 			
 			if (node instanceof MeshNode)
 			{
