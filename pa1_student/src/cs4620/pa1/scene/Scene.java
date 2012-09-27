@@ -113,19 +113,11 @@ public class Scene
 
 	public void render(GL2 gl)
 	{
-		gl.glClearColor(0, 0, 0, 0);
-		gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
-		gl.glColor3d(1.0, 1.0, 1.0);
-		
 		renderHelper(getSceneRoot(), gl, false);
 	}
 
 	public void renderForPicking(GL2 gl)
 	{		
-		gl.glClearColor(0, 0, 0, 0);
-		gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
-		gl.glColor3d(1.0, 1.0, 1.0);
-		
 		renderHelper(getSceneRoot(), gl, true);
 	}
 	
