@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import javax.media.opengl.GL2;
-import javax.media.opengl.fixedfunc.GLMatrixFunc;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.vecmath.Vector3f;
@@ -114,21 +113,19 @@ public class Scene
 
 	public void render(GL2 gl)
 	{
-		// TODO: (Problem 3) Fill in the code to render the scene.		
 		gl.glClearColor(0, 0, 0, 0);
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
-
 		gl.glColor3d(1.0, 1.0, 1.0);
+		
 		renderHelper(getSceneRoot(), gl, false);
 	}
 
 	public void renderForPicking(GL2 gl)
 	{		
-		// TODO: (Problem 3) Fill in the code to render the scene for picking.
 		gl.glClearColor(0, 0, 0, 0);
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
-
 		gl.glColor3d(1.0, 1.0, 1.0);
+		
 		renderHelper(getSceneRoot(), gl, true);
 	}
 	
@@ -140,7 +137,6 @@ public class Scene
 			
 			Vector3f transform= transformationNode.translation;
 			gl.glTranslatef(transform.x, transform.y, transform.z);
-			
 			
 			//perform z, y, and x rotations separately (in that order)
 			transform= transformationNode.rotation;
@@ -162,17 +158,13 @@ public class Scene
 			}
 		}
 		
-		if (node instanceof LightNode)
-		{
-			//do nothing?
-			//LightNode lightNode = (LightNode)node;
-		}
-		
-		//call all of the children with the new transformations added on
 		for (int i = 0; i < node.getChildCount(); i++)
 		{
+			//call all of the children with the new transformations added on
 			gl.glPushMatrix();
 			renderHelper(node.getSceneNodeChild(i), gl, picking);
+			
+			//remove the changes from children in other branches
 			gl.glPopMatrix();
 		}
 	}

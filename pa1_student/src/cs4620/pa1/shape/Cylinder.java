@@ -10,10 +10,10 @@ public class Cylinder extends TriangleMesh
 	@Override
 	public void buildMesh(float tolerance)
 	{
-		// TODO: (Problem 2) Fill in the code to create a cylinder mesh.
 		int numCircumferencePoints= (int) (2*Math.PI*DEFAULT_RADIUS/tolerance);
 		
-		int vertexCount= numCircumferencePoints * 4 + 2; //TODO: should be * 4 + 2
+		//two points for center of top and bottom circles
+		int vertexCount= numCircumferencePoints * 4 + 2; 
 		
 		float[] vertices = new float[3*vertexCount];
 		float[] normals = new float[3*vertexCount];
@@ -44,7 +44,7 @@ public class Cylinder extends TriangleMesh
 		normals[nextStart * 3 + 1]= -1;
 		normals[nextStart * 3 + 2]= 0;
 		
-		int triangleCount= numCircumferencePoints * 4; //TODO: 1 should be 4
+		int triangleCount= numCircumferencePoints * 4; 
 		
 		int[] triangles= new int[3*triangleCount];
 		
@@ -90,7 +90,7 @@ public class Cylinder extends TriangleMesh
 		{	
 			float sinTheta= (float) Math.sin(deltaTheta*i);
 			float cosTheta= (float) Math.cos(deltaTheta*i);
-			//assuming x, y, z
+			
 			vertices[3*i]= cosTheta;
 			vertices[3*i + 1]= yCoord;
 			vertices[3*i + 2]= sinTheta;
@@ -103,6 +103,7 @@ public class Cylinder extends TriangleMesh
 			}
 			else
 			{
+				//this point is on a cap
 				normals[3*i]= 0;
 				normals[3*i + 1]= yCoord;
 				normals[3*i + 2]= 0;
