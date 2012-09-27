@@ -35,10 +35,7 @@ public class Sphere extends TriangleMesh
 				vertices[3 * point + 0] = (float) (r * Math.sin(theta) * Math.cos(j * deltaphi)); // x
 				vertices[3 * point + 1] = (float) (r * Math.sin(theta) * Math.sin(j * deltaphi)); // y
 				vertices[3 * point + 2] = (float) (r * Math.cos(theta)); // z
-				System.out.println(vertices[3 * point + 0] + ", " + vertices[3 * point + 1]
-						+ ", " + vertices[3 * point + 2]);
 				point += 1;
-				assert(point != numvertices - 1);
 			}
 		}
 		
@@ -59,32 +56,6 @@ public class Sphere extends TriangleMesh
 		// so we can simplify numxy + numxy + 2 * numxy * (numlats - 1);
 		int numtriangles = 2 * numVL * numlats;
 		
-		
-		// 0 = top pole
-		// 1 2 3, = first latitude
-		// 4 5 6 = second latitude
-		// 7 = bottom pole
-		// num triangles = 3 + 6 + 3 = 12 = 2 * 3 * 2 = 2 * numVL * numLats
-		// numvl = 3
-		// numlats = 2
-		// triangles are:
-		// 1 2 0
-		// 2 3 0
-		// 3 1 0
-		
-		// 4 5 1
-		// 5 2 1
-		// 5 6 2
-		// 6 3 2
-		// 6 4 3
-		// 4 1 3
-		
-		// 7 5 4
-		// 7 6 5
-		
-		// 7 4 6
-		
-		// ;
 		// ok we know how many triangles we can now allocate and fill
 		int[] triangles = new int[3*numtriangles];
 		
@@ -103,18 +74,12 @@ public class Sphere extends TriangleMesh
 		triangles[3 * triangle + 1] =  (point + 0);
 		triangles[3 * triangle + 2] = 0;
 		triangle += 1;
-		//point += numVL;
 		
 		// for latitudes in between... each vertex will be in part of two triangles below it
 		// actually not true, each vertex will be part of four triangles below it,
 		// but easiest to count two triangles for each vertex (else we'd double count)
 		for (int i = 1; i < numlats; i++) {
 			theta =  ( i * Math.PI / (numlats + 1) ); // theta from +z to xy plane
-			//rxz =  Math.sqrt(2*Math.pow(rxy, 2)*(1 - Math.cos(Math.PI - theta)));
-			//numVL = (int) Math.ceil(2 * Math.PI * rxz / tolerance);
-			//thetab =  ( (i+1)*Math.PI / ( (numlats + 1))); // theta from xz plane to y
-			//rxzb =  Math.sqrt(2*Math.pow(rxy, 2)*(1 - Math.cos(Math.PI - theta)));
-			//numVLb = (int) Math.ceil(2 * Math.PI * rxz / tolerance);
 			// normal cases
 			for (int j = 0; j < numVL - 1; j++) {
 				// 5 6 2
@@ -154,9 +119,6 @@ public class Sphere extends TriangleMesh
 		triangles[3 * triangle + 2] = (point + numVL - 1);
 		triangle += 1;
 		point += numVL;
-		System.out.println(point + ", " + vertices.length/3);
-		System.out.println(triangle + ", " + triangles.length/3);
-		System.out.println(numVL);
 		
 		setMeshData(vertices, normals, triangles);
 	}
